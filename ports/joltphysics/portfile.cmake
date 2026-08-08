@@ -45,4 +45,25 @@ vcpkg_fixup_pkgconfig()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 vcpkg_cmake_config_fixup(PACKAGE_NAME Jolt CONFIG_PATH "lib/cmake/Jolt")
 
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
+    vcpkg_replace_string(
+        "${CURRENT_PACKAGES_DIR}/include/Jolt/Core/Core.h"
+        "#pragma once"
+        [=[#pragma once
+
+#ifndef JPH_SHARED_LIBRARY
+#define JPH_SHARED_LIBRARY
+#endif
+#ifndef JPH_FLOATING_POINT_EXCEPTIONS_ENABLED
+#define JPH_FLOATING_POINT_EXCEPTIONS_ENABLED
+#endif
+#ifndef JPH_USE_CPU_COMPUTE
+#define JPH_USE_CPU_COMPUTE
+#endif
+#ifndef JPH_OBJECT_STREAM
+#define JPH_OBJECT_STREAM
+#endif]=]
+    )
+endif()
+
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
